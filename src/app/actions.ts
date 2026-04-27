@@ -18,6 +18,22 @@ export async function registerAction(data: any) {
 
     // Google Sheets에 데이터 기록
     try {
+      const formatHealthcareTarget = (target: any) => {
+        if (!target || !target.name) return '';
+        const { name, birth, gender, phone } = target;
+        let formattedBirth = birth || '';
+        if (birth && birth.length === 6) {
+          const year = parseInt(birth.substring(0, 2));
+          const yearPrefix = year >= 40 ? '19' : '20';
+          const fullBirth = yearPrefix + birth;
+          let genderDigit = '';
+          if (gender === '남') genderDigit = yearPrefix === '19' ? '1' : '3';
+          else if (gender === '여') genderDigit = yearPrefix === '19' ? '2' : '4';
+          formattedBirth = genderDigit ? `${fullBirth}-${genderDigit}` : fullBirth;
+        }
+        return `${name} ${formattedBirth} ${phone || ''}`.trim();
+      };
+
       const sheetData = {
         '신청일시': new Date().toLocaleString('ko-KR'),
         '상품명': data.product || '더좋은하이브리드698',
@@ -36,10 +52,10 @@ export async function registerAction(data: any) {
         '영업자연락처': data.salesPhone || '',
         'document_id': eformResult.document_id,
         '상태': '신청완료',
-        '대상자1': data.healthcareTargets?.[0]?.name ? `${data.healthcareTargets[0].name} ${data.healthcareTargets[0].birth || ''} ${data.healthcareTargets[0].phone || ''}`.trim() : '',
-        '대상자2': data.healthcareTargets?.[1]?.name ? `${data.healthcareTargets[1].name} ${data.healthcareTargets[1].birth || ''} ${data.healthcareTargets[1].phone || ''}`.trim() : '',
-        '대상자3': data.healthcareTargets?.[2]?.name ? `${data.healthcareTargets[2].name} ${data.healthcareTargets[2].birth || ''} ${data.healthcareTargets[2].phone || ''}`.trim() : '',
-        '대상자4': data.healthcareTargets?.[3]?.name ? `${data.healthcareTargets[3].name} ${data.healthcareTargets[3].birth || ''} ${data.healthcareTargets[3].phone || ''}`.trim() : '',
+        '대상자1': formatHealthcareTarget(data.healthcareTargets?.[0]),
+        '대상자2': formatHealthcareTarget(data.healthcareTargets?.[1]),
+        '대상자3': formatHealthcareTarget(data.healthcareTargets?.[2]),
+        '대상자4': formatHealthcareTarget(data.healthcareTargets?.[3]),
       };
       
       const sheetResult = await addRegistrationToSheet(sheetData, '하이브리드698');
