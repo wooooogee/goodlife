@@ -8,20 +8,50 @@ import TermsAgreement from './TermsAgreement';
 import { registerAction } from '@/app/actions';
 import Script from 'next/script';
 
-const DEFAULT_TERMS = [
-  {
-    id: 'product_notice',
-    title: '1. 상품내용 고지에 대한 동의 (필수)',
-    content: `본 신청과 관련하여 계약자 본인은 상기 금융거래정보(카드 정보, 은행, 계좌번호 등)를 만기·해지 신청 때까지 청구 기관에 제공하고, 자동이체를 신청합니다.
+const PRODUCTS = {
+  '더좋은하이브리드698': {
+    name: '더좋은하이브리드698',
+    shortName: '하이브리드 698',
+    totalPrice: '498만원',
+    sangjoPrice: '300만 원',
+    productPrice: '198만 원',
+    monthly1_60: 35000,
+    monthlyNext: 16000,
+    nextRange: '61~240',
+    totalMonths: 240,
+    color: 'indigo',
+  },
+  '더좋은프리미엄540': {
+    name: '더좋은프리미엄540',
+    shortName: '프리미엄 540',
+    totalPrice: '540만원',
+    sangjoPrice: '312만 원',
+    productPrice: '228만 원',
+    monthly1_60: 40000,
+    monthlyNext: 20000,
+    nextRange: '61~210',
+    totalMonths: 210,
+    color: 'emerald',
+  }
+};
+
+const getTerms = (productName: string) => {
+  const product = PRODUCTS[productName as keyof typeof PRODUCTS] || PRODUCTS['더좋은하이브리드698'];
+  
+  return [
+    {
+      id: 'product_notice',
+      title: '1. 상품내용 고지에 대한 동의 (필수)',
+      content: `본 신청과 관련하여 계약자 본인은 상기 금융거래정보(카드 정보, 은행, 계좌번호 등)를 만기·해지 신청 때까지 청구 기관에 제공하고, 자동이체를 신청합니다.
 본 상품은 60회 약정 의무 납입 상품으로, 청약 철회 기간(14일) 이후 해지 시 잔여금을 완납하여야 하며 이에 동의합니다.
 본 상품은 더좋은라이프 상조 서비스와 에넥스텔레콤 결합 상품으로, 상조 서비스와 렌탈 계약은 각각 별개로 진행됩니다. 60회까지의 렌탈 계약으로 제공되는 제품 및 건강 안심 케어 서비스는 사은품이 아님을 알려드립니다.
-본 결합 상품의 총 납입 금액은 498만원(실 상조 납입금 300만 원, 제품 1구좌 198만 원 기준), 240회 만기 상품입니다. 고객님께서 만기 회차 도래 시점까지 상품 금액을 완납하고 익월까지 상조 서비스를 이용하지 않고 해약하실 경우, 실 상조 납입금 전액과 만기 축하금을 지급해 드립니다. 단, 고객님께서 만기 회차 이전에 해지할 경우, 해지 시점을 기준으로 납입된 실 상조 납입금에 대해 공정거래위원회 해약 환급금 산정 기준 고시에 따라 환급합니다.`,
-    required: true
-  },
-  {
-    id: 'privacy',
-    title: '2. 개인(신용)정보의 수집·이용에 관한 사항(필수)',
-    content: `이용목적
+본 결합 상품의 총 납입 금액은 ${product.totalPrice}(실 상조 납입금 ${product.sangjoPrice}, 제품 1구좌 ${product.productPrice} 기준), ${product.totalMonths}회 만기 상품입니다. 고객님께서 만기 회차 도래 시점까지 상품 금액을 완납하고 익월까지 상조 서비스를 이용하지 않고 해약하실 경우, 실 상조 납입금 전액과 만기 축하금을 지급해 드립니다. 단, 고객님께서 만기 회차 이전에 해지할 경우, 해지 시점을 기준으로 납입된 실 상조 납입금에 대해 공정거래위원회 해약 환급금 산정 기준 고시에 따라 환급합니다.`,
+      required: true
+    },
+    {
+      id: 'privacy',
+      title: '2. 개인(신용)정보의 수집·이용에 관한 사항(필수)',
+      content: `이용목적
 · 상조서비스에 관한 계약이행 및 서비스 제공
 · 상조서비스 가입 고객 관리 및 상조서비스계약의 체결·유지·관리, 상담(민원처리 등)
 · 요금청구를 위한 본인 확인, 요금결제(카드결제, CMS출금 등) 및 추심 업무를 위한 신용정보조회
@@ -33,12 +63,12 @@ const DEFAULT_TERMS = [
 이용기간
 본 계약체결일로부터 계약종료 후 3년까지
 (단, 전자상거래 등에서의 소비자보호에 관한 법률 등 관련 법령의 규정에 의하여 보존할 필요가 있는 경우에는 그에 따름)`,
-    required: true
-  },
-  {
-    id: 'third_party',
-    title: '3. 제3자 제공 동의에 관한 사항(필수)',
-    content: `본 계약과 관련하여 귀사가 본인으로부터 취득한 개인정보는 「개인정보보호법」 제17조와 제22조에 따라 제3자에게 제공할 경우에는 본인의 사전 동의를 얻어야 합니다. 이에 본인은 귀사가 본인의 개인정보를 아래와 같이 제3자에게 제공하는 것에 동의합니다.
+      required: true
+    },
+    {
+      id: 'third_party',
+      title: '3. 제3자 제공 동의에 관한 사항(필수)',
+      content: `본 계약과 관련하여 귀사가 본인으로부터 취득한 개인정보는 「개인정보보호법」 제17조와 제22조에 따라 제3자에게 제공할 경우에는 본인의 사전 동의를 얻어야 합니다. 이에 본인은 귀사가 본인의 개인정보를 아래와 같이 제3자에게 제공하는 것에 동의합니다.
 
 · 개인정보를 제공받는 자: 신한은행, 금융결제원, KICC, 더좋은라이프(주), 에넥스텔레콤, 비에스온, KB헬스케어, (주)여의도자산관리본부, 신안소프트
 · 개인정보를 제공받는 자의 개인정보 이용 목적: 할부거래에 관한 법률 제27조에 따른 공제 계약 및 소비자피해보상보험계약업무, 출금이체 서비스 제공 및 출금 동의 확인, 할부거래, 건강안심케어서비스 이용, 상품/서비스 홍보 및 판매, SMS 서비스 제공, 개인정보조회/신용정보조회 등
@@ -47,12 +77,12 @@ const DEFAULT_TERMS = [
   - 계약정보: 회원번호, 납입내역, 상담내역, 행사/해약사항
   - 결제정보: 예금주, 생년월일, 연락처, 계약자와의 관계, 계좌·카드 정보
 · 개인정보를 제공받는 자의 개인정보 보유 및 이용기간: 상조서비스계약 종료 시 삭제`,
-    required: true
-  },
-  {
-    id: 'marketing',
-    title: '4. 마케팅 정보 제공 동의(선택)',
-    content: `이용목적
+      required: true
+    },
+    {
+      id: 'marketing',
+      title: '4. 마케팅 정보 제공 동의(선택)',
+      content: `이용목적
 · 신규 상품 및 서비스 안내
 · 이벤트, 프로모션, 혜택 정보 제공
 · 고객 맞춤 정보 제공
@@ -60,20 +90,23 @@ const DEFAULT_TERMS = [
 성명, 주소, 휴대폰번호
 이용기간
 동의일로부터 동의 철회 시까지`,
-    required: false
-  },
-];
+      required: false
+    },
+  ];
+};
 
 const STEPS = [
+  { id: 'selection', title: '상품 선택' },
   { id: 'info', title: '계약자 정보' },
-  { id: 'healthcare', title: '헬스케어대상자 정보' },
   { id: 'plan', title: '상품 정보' },
+  { id: 'healthcare', title: '헬스케어대상자 정보' },
   { id: 'payment', title: '결제 정보' },
   { id: 'terms', title: '약관 동의' },
   { id: 'signature', title: '전자 서명' },
   { id: 'sales', title: '영업 정보' },
   { id: 'complete', title: '가입 완료' },
 ];
+
 
 const RegistrationForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -201,13 +234,13 @@ const RegistrationForm = () => {
   };
 
   const handleNext = () => {
-    if (currentStep === 0) {
+    if (currentStep === 1) {
       if (!formData.name || !formData.phone || !formData.address || !formData.residentId || !formData.gender || !formData.productName) {
         alert('계약자 데이터 및 상품명을 모두 정확히 입력해 주세요.');
         return;
       }
     }
-    if (currentStep === 1) { // Healthcare Targets step
+    if (currentStep === 3) { // Healthcare Targets step (moved to Step 3)
       const count = Number(formData.productCount);
       const isTargetValid = formData.healthcareTargets.slice(0, count).every(t => t.relation && t.name && t.birth && t.phone);
       if (!isTargetValid) {
@@ -215,7 +248,7 @@ const RegistrationForm = () => {
         return;
       }
     }
-    if (currentStep === 3) { // Payment Details step
+    if (currentStep === 4) { // Payment Details step
       if (formData.paymentMethod === 'card') {
         const pureCard = formData.paymentInfo.cardNumber.replace(/[^0-9]/g, '');
         if (pureCard.length < 11 || !formData.paymentInfo.cardCompany || !formData.paymentInfo.cardExpiry) {
@@ -229,8 +262,9 @@ const RegistrationForm = () => {
         }
       }
     }
-    if (currentStep === 4) { // Terms step
-      const missingRequired = DEFAULT_TERMS
+    if (currentStep === 5) { // Terms step
+      const terms = getTerms(formData.product);
+      const missingRequired = terms
         .filter(t => t.required)
         .some(t => !formData.agreement[t.id as keyof typeof formData.agreement]);
       
@@ -239,10 +273,10 @@ const RegistrationForm = () => {
         return;
       }
     }
-    if (currentStep === 5) { // Signature step
+    if (currentStep === 6) { // Signature step
       if (!saveSignature()) return;
     }
-    if (currentStep === 6) { // Sales Info step
+    if (currentStep === 7) { // Sales Info step
       if (!formData.salesName || !formData.salesAffiliation) {
         alert('영업사원 정보(소속 포함)를 모두 정확히 입력해 주세요.');
         return;
@@ -271,7 +305,7 @@ const RegistrationForm = () => {
             window.open(`/api/download?id=${result.documentId}`, '_blank');
           }, 2000);
         }
-        setCurrentStep(7); // Final step
+        setCurrentStep(8); // Final step
       } else {
         alert(result.message || '등록 중 오류가 발생했습니다.');
       }
@@ -283,12 +317,28 @@ const RegistrationForm = () => {
     }
   };
 
+  const selectedProduct = PRODUCTS[formData.product as keyof typeof PRODUCTS] || PRODUCTS['더좋은하이브리드698'];
+
   return (
     <div className="min-h-screen bg-theme text-theme transition-colors duration-300 flex flex-col items-center py-12 px-4 selection:bg-indigo-500/30">
       <Script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" strategy="beforeInteractive" />
 
       <div className="w-full max-w-xl space-y-10">
-        <div className="flex justify-end items-center px-4">
+        <div className="flex justify-between items-center px-4">
+          <div className="flex items-center gap-3">
+            {currentStep > 0 && currentStep < 8 && (
+              <button
+                onClick={handleBack}
+                className="p-3 rounded-2xl bg-card border border-theme shadow-sm hover:scale-105 active:scale-95 transition-all"
+              >
+                <ArrowLeft size={20} />
+              </button>
+            )}
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest leading-none">Step {currentStep + 1}</span>
+              <span className="text-lg font-black italic tracking-tighter leading-tight">{STEPS[currentStep].title}</span>
+            </div>
+          </div>
           <button
             type="button"
             onClick={toggleTheme}
@@ -301,6 +351,54 @@ const RegistrationForm = () => {
 
         <AnimatePresence mode="wait">
           {currentStep === 0 && (
+            <motion.div
+              key="step-selection"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-8 card-theme p-8 rounded-[3rem]"
+            >
+              <div className="space-y-1 pb-2 border-b border-theme/10 text-center">
+                <h2 className="text-2xl font-black italic tracking-tight">상품을 선택하세요</h2>
+                <p className="text-xs text-sub font-bold uppercase tracking-widest">Select Your Membership Plan</p>
+              </div>
+
+              <div className="grid gap-4">
+                {Object.values(PRODUCTS).map((product) => (
+                  <button
+                    key={product.name}
+                    onClick={() => {
+                      updateFormData('product', product.name);
+                      handleNext();
+                    }}
+                    className={`group relative overflow-hidden p-8 rounded-[2.5rem] border-2 transition-all text-left ${
+                      formData.product === product.name 
+                      ? 'border-indigo-600 bg-indigo-600/5 shadow-2xl shadow-indigo-600/10' 
+                      : 'border-theme bg-theme hover:border-indigo-400'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="space-y-2">
+                        <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                          product.color === 'indigo' ? 'bg-indigo-500/10 text-indigo-600' : 'bg-emerald-500/10 text-emerald-600'
+                        }`}>
+                          <Package size={12} /> Premium Plan
+                        </div>
+                        <h3 className="text-xl font-black italic tracking-tight group-hover:translate-x-1 transition-transform whitespace-nowrap">{product.shortName}</h3>
+                      </div>
+                      <div className={`p-4 rounded-2xl bg-theme border border-theme shadow-sm group-hover:scale-110 transition-transform ${
+                        formData.product === product.name ? 'text-indigo-600' : 'text-sub'
+                      }`}>
+                        <ArrowRight size={24} />
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {currentStep === 1 && (
             <motion.div
               key="step-info"
               initial={{ opacity: 0, x: 20 }}
@@ -315,9 +413,15 @@ const RegistrationForm = () => {
               <div className="space-y-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-sub ml-1 flex items-center gap-2"><Package size={14} /> 상품명</label>
-                    <div className="w-full bg-theme border border-theme rounded-2xl py-4.5 px-6 font-bold">
-                      더좋은하이브리드698
+                    <label className="text-xs font-bold text-sub ml-1 flex items-center gap-2"><Package size={14} /> 선택된 상품</label>
+                    <div className="w-full bg-theme border-2 border-indigo-600/20 rounded-2xl py-4.5 px-6 font-bold flex justify-between items-center group">
+                      <span className="italic">{formData.product}</span>
+                      <button 
+                        onClick={() => setCurrentStep(0)} 
+                        className="text-[10px] font-black text-indigo-500 uppercase tracking-widest bg-indigo-500/10 px-3 py-1.5 rounded-full hover:bg-indigo-500 hover:text-white transition-all"
+                      >
+                        Change
+                      </button>
                     </div>
                   </div>
 
@@ -325,6 +429,7 @@ const RegistrationForm = () => {
                     <label className="text-xs font-bold text-sub ml-1 flex items-center gap-2"><Tag size={14} /> 제품명</label>
                     <input
                       type="text"
+                      lang="ko"
                       placeholder="제품명을 별도로 입력하세요 (예: LG 올레드 TV)"
                       value={formData.productName}
                       onChange={(e) => updateFormData('productName', e.target.value)}
@@ -356,7 +461,7 @@ const RegistrationForm = () => {
                   <label className="text-xs font-bold text-sub ml-1">성명</label>
                   <div className="relative group">
                     <User className="absolute left-5 top-1/2 -translate-y-1/2 text-sub group-focus-within:text-indigo-500 transition-colors" size={18} />
-                    <input type="text" placeholder="실명을 입력하세요" value={formData.name} onChange={(e) => updateFormData('name', e.target.value)} className="w-full bg-theme border border-theme rounded-2xl py-4.5 pl-14 pr-6 focus:border-indigo-500 outline-none" />
+                    <input type="text" lang="ko" placeholder="실명을 입력하세요" value={formData.name} onChange={(e) => updateFormData('name', e.target.value)} className="w-full bg-theme border border-theme rounded-2xl py-4.5 pl-14 pr-6 focus:border-indigo-500 outline-none" />
                   </div>
                 </div>
 
@@ -387,7 +492,7 @@ const RegistrationForm = () => {
                         className="w-full bg-theme border border-theme rounded-2xl py-4.5 pl-14 pr-6 focus:border-indigo-500 outline-none text-sm cursor-pointer"
                       />
                     </div>
-                    <input type="text" placeholder="상세 주소를 입력하세요" value={formData.addressDetail} onChange={(e) => updateFormData('addressDetail', e.target.value)} className="w-full bg-theme border border-theme rounded-2xl py-4.5 px-6 focus:border-indigo-500 outline-none text-sm" />
+                    <input type="text" lang="ko" placeholder="상세 주소를 입력하세요" value={formData.addressDetail} onChange={(e) => updateFormData('addressDetail', e.target.value)} className="w-full bg-theme border border-theme rounded-2xl py-4.5 px-6 focus:border-indigo-500 outline-none text-sm" />
                   </div>
                 </div>
 
@@ -406,11 +511,68 @@ const RegistrationForm = () => {
                 </div>
               </div>
 
-              <button onClick={handleNext} className="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black flex items-center justify-center gap-2 group shadow-xl shadow-indigo-500/20">다음 단계 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" /></button>
+              <div className="flex gap-3 pt-4">
+                <button onClick={() => setCurrentStep(0)} className="flex-1 py-5 bg-card text-sub rounded-2xl font-bold border border-theme">이전</button>
+                <button onClick={handleNext} className="flex-[2] py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black flex items-center justify-center gap-2 group shadow-xl shadow-indigo-500/20">다음 단계 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" /></button>
+              </div>
             </motion.div>
           )}
 
-          {currentStep === 1 && (
+          {currentStep === 2 && (
+            <motion.div
+              key="step-plan"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-8 card-theme p-8 rounded-[3rem]"
+            >
+              <div className="space-y-1 pb-2 border-b border-theme/10">
+                <h2 className="text-xl font-black italic tracking-tight">{STEPS[currentStep].title}</h2>
+              </div>
+
+              <div className="bg-theme border border-theme p-8 rounded-[2rem] space-y-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0 space-y-1.5">
+                    <p className="text-[10px] text-indigo-500 font-black uppercase tracking-widest">Selected Product</p>
+                    <h3 className="text-lg font-black italic leading-tight">{formData.product}</h3>
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-[11px] font-black text-indigo-600 bg-indigo-600/5 px-2 py-1 rounded-lg border border-indigo-600/10">
+                        {formData.productCount}구좌
+                      </span>
+                      <span className="text-[11px] font-bold text-sub border-l border-theme/20 pl-2.5 truncate">
+                        {formData.productName || '제품명 미지정'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center p-3.5 bg-card rounded-2xl border border-theme">
+                    <span className="text-sub text-[10px] font-bold whitespace-nowrap">1~60회차 (가전+상조)</span>
+                    <span className="font-black text-sm">
+                      {(selectedProduct.monthly1_60 * Number(formData.productCount)).toLocaleString()}원
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center p-3.5 bg-card rounded-2xl border border-theme">
+                    <span className="text-sub text-[10px] font-bold whitespace-nowrap">{selectedProduct.nextRange}회차 (상조)</span>
+                    <span className="font-black text-indigo-500 text-sm">
+                      {(selectedProduct.monthlyNext * Number(formData.productCount)).toLocaleString()}원
+                    </span>
+                  </div>
+                  <div className="flex justify-center items-center py-3 bg-indigo-500/10 rounded-2xl border border-indigo-500/10">
+                    <span className="text-indigo-500 font-black text-[11px] italic">만기 시 100% 환급 보장</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button onClick={handleBack} className="flex-1 py-5 bg-card text-sub rounded-2xl font-bold border border-theme">이전</button>
+                <button onClick={handleNext} className="flex-[2] py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black flex items-center justify-center gap-2 group shadow-xl shadow-indigo-500/20">다음 단계 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" /></button>
+              </div>
+            </motion.div>
+          )}
+
+          {currentStep === 3 && (
             <motion.div
               key="step-healthcare"
               initial={{ opacity: 0, x: 20 }}
@@ -456,11 +618,11 @@ const RegistrationForm = () => {
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-sub ml-1">관계</label>
-                        <input type="text" placeholder="본인, 배우자 등" value={formData.healthcareTargets[idx].relation} onChange={(e) => updateHealthcareTarget(idx, 'relation', e.target.value)} className="w-full bg-theme border border-theme rounded-xl py-3 px-4 outline-none focus:border-indigo-500 text-sm" />
+                        <input type="text" lang="ko" placeholder="본인, 배우자 등" value={formData.healthcareTargets[idx].relation} onChange={(e) => updateHealthcareTarget(idx, 'relation', e.target.value)} className="w-full bg-theme border border-theme rounded-xl py-3 px-4 outline-none focus:border-indigo-500 text-sm" />
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-sub ml-1">성명</label>
-                        <input type="text" placeholder="성함" value={formData.healthcareTargets[idx].name} onChange={(e) => updateHealthcareTarget(idx, 'name', e.target.value)} className="w-full bg-theme border border-theme rounded-xl py-3 px-4 outline-none focus:border-indigo-500 text-sm" />
+                        <input type="text" lang="ko" placeholder="성함" value={formData.healthcareTargets[idx].name} onChange={(e) => updateHealthcareTarget(idx, 'name', e.target.value)} className="w-full bg-theme border border-theme rounded-xl py-3 px-4 outline-none focus:border-indigo-500 text-sm" />
                       </div>
                     </div>
 
@@ -499,61 +661,12 @@ const RegistrationForm = () => {
 
               <div className="flex gap-3 pt-4">
                 <button onClick={handleBack} className="flex-1 py-5 bg-card text-sub rounded-2xl font-bold border border-theme">이전</button>
-                <button onClick={handleNext} className="flex-[2] py-5 bg-indigo-600 text-white rounded-2xl font-black">다음 단계</button>
+                <button onClick={handleNext} className="flex-[2] py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black flex items-center justify-center gap-2 group shadow-xl shadow-indigo-500/20">다음 단계 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" /></button>
               </div>
             </motion.div>
           )}
 
-          {currentStep === 2 && (
-            <motion.div
-              key="step-plan"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="space-y-8 card-theme p-8 rounded-[3rem]"
-            >
-              <div className="space-y-1 pb-2 border-b border-theme/10">
-                <h2 className="text-xl font-black italic tracking-tight">{STEPS[currentStep].title}</h2>
-              </div>
-
-              <div className="bg-theme border border-theme p-8 rounded-[2rem] space-y-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-[10px] text-indigo-500 font-black uppercase tracking-widest">Selected Product</p>
-                    <h3 className="text-xl font-black italic">{formData.productName} ({formData.productCount}구좌)</h3>
-                  </div>
-                  <div className="bg-indigo-500/10 px-4 py-2 rounded-xl border border-indigo-500/20 font-bold text-indigo-500">
-                    비정기납입형
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center p-4 bg-card rounded-2xl border border-theme">
-                    <span className="text-sub text-xs font-bold">1~60회차 (가전+상조)</span>
-                    <span className="font-black">
-                      {(35000 * Number(formData.productCount)).toLocaleString()}원
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center p-4 bg-card rounded-2xl border border-theme">
-                    <span className="text-sub text-xs font-bold">61~240회차 (상조)</span>
-                    <span className="font-black text-indigo-500">
-                      {(16000 * Number(formData.productCount)).toLocaleString()}원
-                    </span>
-                  </div>
-                  <div className="flex justify-center items-center py-4 bg-indigo-500/10 rounded-2xl border border-indigo-500/10">
-                    <span className="text-indigo-500 font-black text-sm italic">만기 시 100% 환급 보장</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <button onClick={handleBack} className="flex-1 py-5 bg-card text-sub rounded-2xl font-bold border border-theme">이전</button>
-                <button onClick={handleNext} className="flex-[2] py-5 bg-indigo-600 text-white rounded-2xl font-black">다음 단계</button>
-              </div>
-            </motion.div>
-          )}
-
-          {currentStep === 3 && (
+          {currentStep === 4 && (
             <motion.div
               key="step-pay-detail"
               initial={{ opacity: 0, x: 20 }}
@@ -576,7 +689,7 @@ const RegistrationForm = () => {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label className="text-xs font-bold text-sub ml-1 flex items-center gap-2"><CreditCard size={14} /> 카드사</label>
-                        <input type="text" placeholder="예: 현대카드" value={formData.paymentInfo.cardCompany} onChange={(e) => updatePaymentInfo('cardCompany', e.target.value)} className="w-full bg-theme border border-theme rounded-2xl py-4.5 px-6 focus:border-indigo-500 outline-none" />
+                        <input type="text" lang="ko" placeholder="예: 현대카드" value={formData.paymentInfo.cardCompany} onChange={(e) => updatePaymentInfo('cardCompany', e.target.value)} className="w-full bg-theme border border-theme rounded-2xl py-4.5 px-6 focus:border-indigo-500 outline-none" />
                       </div>
                       <div className="space-y-2">
                         <label className="text-xs font-bold text-sub ml-1 flex items-center gap-2"><Calendar size={14} /> 유효기간</label>
@@ -618,7 +731,7 @@ const RegistrationForm = () => {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-sub ml-1 flex items-center gap-2"><Landmark size={14} /> 은행명</label>
-                      <input type="text" placeholder="예: 국민은행" value={formData.paymentInfo.bankName} onChange={(e) => updatePaymentInfo('bankName', e.target.value)} className="w-full bg-theme border border-theme rounded-2xl py-4.5 px-6 focus:border-indigo-500 outline-none" />
+                      <input type="text" lang="ko" placeholder="예: 국민은행" value={formData.paymentInfo.bankName} onChange={(e) => updatePaymentInfo('bankName', e.target.value)} className="w-full bg-theme border border-theme rounded-2xl py-4.5 px-6 focus:border-indigo-500 outline-none" />
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-sub ml-1">계좌번호</label>
@@ -645,7 +758,7 @@ const RegistrationForm = () => {
             </motion.div>
           )}
 
-          {currentStep === 4 && (
+          {currentStep === 5 && (
             <motion.div
               key="step-terms"
               initial={{ opacity: 0, x: 20 }}
@@ -658,7 +771,7 @@ const RegistrationForm = () => {
               </div>
 
               <div className="bg-theme border border-theme rounded-[2.5rem] overflow-hidden max-h-[350px] overflow-y-auto px-4 shadow-inner">
-                <TermsAgreement terms={DEFAULT_TERMS} onAgreementChange={(agreement) => updateFormData('agreement', agreement)} />
+                <TermsAgreement terms={getTerms(formData.product)} onAgreementChange={(agreement) => updateFormData('agreement', agreement)} />
               </div>
 
               <div className="flex gap-3 pt-4">
@@ -668,7 +781,7 @@ const RegistrationForm = () => {
             </motion.div>
           )}
 
-          {currentStep === 5 && (
+          {currentStep === 6 && (
             <motion.div
               key="step-signature"
               initial={{ opacity: 0, x: 20 }}
@@ -695,7 +808,7 @@ const RegistrationForm = () => {
             </motion.div>
           )}
 
-          {currentStep === 6 && (
+          {currentStep === 7 && (
             <motion.div
               key="step-sales"
               initial={{ opacity: 0, x: 20 }}
@@ -710,11 +823,11 @@ const RegistrationForm = () => {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-sub ml-1 flex items-center gap-2"><Briefcase size={14} /> 소속</label>
-                  <input type="text" placeholder="영업사원의 소속을 입력하세요" value={formData.salesAffiliation} onChange={(e) => updateFormData('salesAffiliation', e.target.value)} className="w-full bg-theme border border-theme rounded-2xl py-4.5 px-8 outline-none focus:border-indigo-500" />
+                  <input type="text" lang="ko" placeholder="영업사원의 소속을 입력하세요" value={formData.salesAffiliation} onChange={(e) => updateFormData('salesAffiliation', e.target.value)} className="w-full bg-theme border border-theme rounded-2xl py-4.5 px-8 outline-none focus:border-indigo-500" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-sub ml-1">사원 성함</label>
-                  <input type="text" placeholder="성명을 입력하세요" value={formData.salesName} onChange={(e) => updateFormData('salesName', e.target.value)} className="w-full bg-theme border border-theme rounded-2xl py-4.5 px-8 outline-none focus:border-indigo-500" />
+                  <input type="text" lang="ko" placeholder="성명을 입력하세요" value={formData.salesName} onChange={(e) => updateFormData('salesName', e.target.value)} className="w-full bg-theme border border-theme rounded-2xl py-4.5 px-8 outline-none focus:border-indigo-500" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-sub ml-1">사원 연락처 (선택)</label>
@@ -741,7 +854,7 @@ const RegistrationForm = () => {
             </motion.div>
           )}
 
-          {currentStep === 7 && (
+          {currentStep === 8 && (
             <motion.div
               key="step-complete"
               initial={{ scale: 0.9, opacity: 0 }}

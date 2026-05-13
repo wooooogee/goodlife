@@ -35,6 +35,7 @@ export async function getEformsignToken() {
 
 const EFORMSIGN_TEMPLATE_ID_BETTER = 'd9e0306ea32f462194628f8045610816'; // [작업필요] 더좋은크루즈 템플릿 ID
 const EFORMSIGN_TEMPLATE_ID_Hybrid698 = '4e2f0d0f49a24b7caa89fc9c5baf8506';
+const EFORMSIGN_TEMPLATE_ID_Premium540 = 'b9ecf11e1ed14beba8f6d925af8d26e6';
 
 /**
  * Send SMS/Notification Talk to a viewer (Fallback method)
@@ -92,9 +93,9 @@ export async function createEformsignDocument(data: any) {
         const today = new Date().toISOString().split('T')[0];
         const cleanPhone = (data.phone || '').replace(/\D/g, '');
 
-        const templateId = data.product === '더좋은크루즈'
-            ? EFORMSIGN_TEMPLATE_ID_BETTER
-            : EFORMSIGN_TEMPLATE_ID_Hybrid698;
+        let templateId = EFORMSIGN_TEMPLATE_ID_Hybrid698;
+        if (data.product === '더좋은크루즈') templateId = EFORMSIGN_TEMPLATE_ID_BETTER;
+        else if (data.product === '더좋은프리미엄540') templateId = EFORMSIGN_TEMPLATE_ID_Premium540;
 
         console.log(`Creating e-FormSign document for ${data.product} using template ${templateId}`);
 
