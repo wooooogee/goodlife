@@ -9,34 +9,22 @@ import { registerAction } from '@/app/actions';
 import Script from 'next/script';
 
 const PRODUCTS = {
-  '더좋은하이브리드698': {
-    name: '더좋은하이브리드698',
-    shortName: '하이브리드 698',
+  '굿라이프헬스케어': {
+    name: '굿라이프헬스케어',
+    shortName: '굿라이프헬스케어',
     totalPrice: '498만원',
-    sangjoPrice: '300만 원',
-    productPrice: '198만 원',
+    sangjoPrice: '300만원',
+    productPrice: '198만원',
     monthly1_60: 35000,
     monthlyNext: 16000,
     nextRange: '61~240',
     totalMonths: 240,
     color: 'indigo',
-  },
-  '더좋은프리미엄540': {
-    name: '더좋은프리미엄540',
-    shortName: '프리미엄 540',
-    totalPrice: '540만원',
-    sangjoPrice: '312만 원',
-    productPrice: '228만 원',
-    monthly1_60: 40000,
-    monthlyNext: 20000,
-    nextRange: '61~210',
-    totalMonths: 210,
-    color: 'emerald',
   }
 };
 
 const getTerms = (productName: string) => {
-  const product = PRODUCTS[productName as keyof typeof PRODUCTS] || PRODUCTS['더좋은하이브리드698'];
+  const product = PRODUCTS[productName as keyof typeof PRODUCTS] || PRODUCTS['굿라이프헬스케어'];
   
   return [
     {
@@ -135,7 +123,7 @@ const RegistrationForm = () => {
     address: '',
     addressDetail: '',
     residentId: '',
-    product: '더좋은하이브리드698',
+    product: '굿라이프헬스케어',
     productName: '',
     productCount: '1',
     paymentPlan: 'normal',
@@ -317,7 +305,7 @@ const RegistrationForm = () => {
     }
   };
 
-  const selectedProduct = PRODUCTS[formData.product as keyof typeof PRODUCTS] || PRODUCTS['더좋은하이브리드698'];
+  const selectedProduct = PRODUCTS[formData.product as keyof typeof PRODUCTS] || PRODUCTS['굿라이프헬스케어'];
 
   return (
     <div className="min-h-screen bg-theme text-theme transition-colors duration-300 flex flex-col items-center py-12 px-4 selection:bg-indigo-500/30">
