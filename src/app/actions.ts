@@ -58,7 +58,7 @@ export async function registerAction(data: any) {
         '대상자4': formatHealthcareTarget(data.healthcareTargets?.[3]),
       };
       
-      const sheetName = (data.product || '신청현황').replace('더좋은', '');
+      const sheetName = '굿라이프헬스케어';
       const sheetResult = await addRegistrationToSheet(sheetData, sheetName);
       
       if (sheetResult.success) {
