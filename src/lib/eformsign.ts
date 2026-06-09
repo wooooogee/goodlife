@@ -34,7 +34,7 @@ export async function getEformsignToken() {
 }
 
 const EFORMSIGN_TEMPLATE_ID_BETTER = 'd9e0306ea32f462194628f8045610816'; // [작업필요] 더좋은크루즈 템플릿 ID
-const EFORMSIGN_TEMPLATE_ID_Hybrid698 = '4e2f0d0f49a24b7caa89fc9c5baf8506';
+const EFORMSIGN_TEMPLATE_ID_Hybrid698 = 'd32af2e31ab34cf3932442f278e69ea4';
 const EFORMSIGN_TEMPLATE_ID_Premium540 = 'b9ecf11e1ed14beba8f6d925af8d26e6';
 
 /**
