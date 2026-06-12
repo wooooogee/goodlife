@@ -20,6 +20,18 @@ const PRODUCTS = {
     nextRange: '61~240',
     totalMonths: 240,
     color: 'indigo',
+  },
+  '더좋은프리미엄540': {
+    name: '더좋은프리미엄540',
+    shortName: '프리미엄 540',
+    totalPrice: '540만원',
+    sangjoPrice: '312만원',
+    productPrice: '228만원',
+    monthly1_60: 40000,
+    monthlyNext: 20000,
+    nextRange: '61~210',
+    totalMonths: 210,
+    color: 'emerald',
   }
 };
 

@@ -36,7 +36,7 @@ export async function registerAction(data: any) {
 
       const sheetData = {
         '신청일시': new Date().toLocaleString('ko-KR'),
-        '상품명': data.product || '더좋은하이브리드698',
+        '상품명': data.product || '굿라이프헬스케어',
         '계약자': data.name,
         '연락처': data.phone,
         '주소': `${data.address} ${data.addressDetail || ''}`.trim(),
@@ -58,7 +58,7 @@ export async function registerAction(data: any) {
         '대상자4': formatHealthcareTarget(data.healthcareTargets?.[3]),
       };
       
-      const sheetName = '굿라이프헬스케어';
+      const sheetName = data.product === '더좋은프리미엄540' ? '프리미엄540' : '굿라이프헬스케어';
       const sheetResult = await addRegistrationToSheet(sheetData, sheetName);
       
       if (sheetResult.success) {
